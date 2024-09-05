@@ -27,6 +27,16 @@ To build the redfish_exporter executable run the command:
 make build
 ```
 
+To build the redfish_exporter executable run the command:
+```sh
+make build-system
+```
+
+To build the redfish_exporter executable run the command:
+```sh
+make build-chassis
+```
+
 or build in centos 7 docker image
 ```sh
 make docker-build-centos7

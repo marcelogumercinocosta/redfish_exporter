@@ -30,6 +30,14 @@ check_license:
                exit 1; \
        fi
 
+build-chassis: | 
+	@echo ">> building binaries"
+	$(GO) build -o build/redfish_exporter_chassis -ldflags  '-X "main.Type=chassis"  -X "main.Version=$(VERSION)" -X  "main.BuildRevision=$(REVERSION)" -X  "main.BuildBranch=$(BRANCH)" -X "main.BuildTime=$(TIME)" -X "main.BuildHost=$(HOSTNAME)"'
+
+build-system: | 
+	@echo ">> building binaries"
+	$(GO) build -o build/redfish_exporter_system -ldflags  '-X "main.Type=system" -X "main.Version=$(VERSION)" -X  "main.BuildRevision=$(REVERSION)" -X  "main.BuildBranch=$(BRANCH)" -X "main.BuildTime=$(TIME)" -X "main.BuildHost=$(HOSTNAME)"'
+
 build: |
 	@echo ">> building binaries"
 	$(GO) build -o build/redfish_exporter -ldflags  '-X "main.Version=$(VERSION)" -X  "main.BuildRevision=$(REVERSION)" -X  "main.BuildBranch=$(BRANCH)" -X "main.BuildTime=$(TIME)"'

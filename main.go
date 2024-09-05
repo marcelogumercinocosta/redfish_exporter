@@ -24,6 +24,7 @@ var (
 	BuildBranch   string
 	BuildTime     string
 	BuildHost     string
+	Type          string
 	rootLoggerCtx *alog.Entry
 
 	configFile = kingpin.Flag(
@@ -118,7 +119,7 @@ func metricsHandler() http.HandlerFunc {
 			}
 		}
 
-		collector := collector.NewRedfishCollector(target, hostConfig.Username, hostConfig.Password, targetLoggerCtx)
+		collector := collector.NewRedfishCollector(target, hostConfig.Username, hostConfig.Password, targetLoggerCtx, Type)
 		registry.MustRegister(collector)
 		gatherers := prometheus.Gatherers{
 			prometheus.DefaultGatherer,

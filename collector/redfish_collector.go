@@ -40,18 +40,26 @@ type RedfishCollector struct {
 }
 
 // NewRedfishCollector return RedfishCollector
-func NewRedfishCollector(host string, username string, password string, logger *log.Entry) *RedfishCollector {
+func NewRedfishCollector(host string, username string, password string, logger *log.Entry, Type string) *RedfishCollector {
 	var collectors map[string]prometheus.Collector
 	collectorLogCtx := logger
 	redfishClient, err := newRedfishClient(host, username, password)
 	if err != nil {
 		collectorLogCtx.WithError(err).Error("error creating redfish client")
 	} else {
-		chassisCollector := NewChassisCollector(redfishClient, collectorLogCtx)
-		systemCollector := NewSystemCollector(redfishClient, collectorLogCtx)
-		managerCollector := NewManagerCollector(redfishClient, collectorLogCtx)
-
-		collectors = map[string]prometheus.Collector{"chassis": chassisCollector, "system": systemCollector, "manager": managerCollector}
+		if Type == "chassis" {
+			chassisCollector := NewChassisCollector(redfishClient, collectorLogCtx)
+			managerCollector := NewManagerCollector(redfishClient, collectorLogCtx)
+			collectors = map[string]prometheus.Collector{"chassis": chassisCollector, "manager": managerCollector}
+		} else if Type == "system" {
+			systemCollector := NewSystemCollector(redfishClient, collectorLogCtx)
+			collectors = map[string]prometheus.Collector{"system": systemCollector}
+		} else {
+			chassisCollector := NewChassisCollector(redfishClient, collectorLogCtx)
+			managerCollector := NewManagerCollector(redfishClient, collectorLogCtx)
+			systemCollector := NewSystemCollector(redfishClient, collectorLogCtx)
+			collectors = map[string]prometheus.Collector{"chassis": chassisCollector, "system": systemCollector, "manager": managerCollector}
+		}
 	}
 
 	return &RedfishCollector{
